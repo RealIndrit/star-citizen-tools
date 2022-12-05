@@ -39,9 +39,9 @@ def starcitizen(data):
 
 def info():
     return """
-   Session: Is your session id, it's bound to your current play-session, this session is created when the game is launched from your RSI launcher, and does not change if you switch server/regions in game, to change this sesion, you will have to relaunch the game
+   Session: Is your session id, it's bound to your current play-session, this session is created when the game is launched from your RSI launcher, and does not change if you switch server/regions in game, to change this session, you will have to relaunch the game
 
-   ShardId: The current server you are currently playing on, if this id is the same as your session, it means that no you were either in a loading screen or in a submenu of the main start menu
+   ShardId: The current server you are currently playing on, if this id is the same as your session, it means that you were either in a loading screen or in a submenu of the main start menu
 
    Time (Unix): Current unix time, seconds since UTC 1 January 1970, you can easily convert this to more readable date format on the internet
 
@@ -49,7 +49,8 @@ def info():
 
    File: You know what this is :)
 
-   EXTRA: Source for this info is from leaked evocati gameplay with debug info active on the screen: https://streamable.com/0woa2q and https://cdn.discordapp.com/attachments/422137614854914048/1048887977025220619/Tavern-Upload-Image-473137-1670072591.png
+   EXTRA: Source for this info is from leaked evocati gameplay with debug info active on the screen from spectrum (https://streamable.com/0woa2q) and (https://cdn.discordapp.com/attachments/422137614854914048/1048887977025220619/Tavern-Upload-Image-473137-1670072591.png)
+          I do not take any responsibilities for these leaks, these are shared for educational purpose and was not originally leaked by me nor anyone I associate with!
    """
 
 
