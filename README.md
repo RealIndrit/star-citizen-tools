@@ -1,8 +1,13 @@
-# star-citizen-graphql
+# star-citizen-tools
 
-I initially found out that all graphql enpoints are accessible, even when not logged in to a Star Citizen account, or having an active auth session through cookies. This made me interrested in the limits of how far it is usable for someone with no active sessions.
+Includes:
 
-DISCLAIMER:
-This is for educational purposes only and should not be abused in any way!
+1. Star Citizen QR decoder
+   * Decodes the QR session on screen, supports both folder directory and direct file directory
 
-TDOD: Make it type more type-safe and rewrite for faster iterations, and clean up this horrendous code lol
+2. Star Citizen Code brute-forcer
+   * Automatically generates codes and tryes them against the graphql enpoint
+
+EXTRA: I will probably add more scripts in the future for stuff I find interresting
+
+DISCLAIMER: These tool is for educational purposes only, I DO NOT take any responsibilites of what you used them for!
