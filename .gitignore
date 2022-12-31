@@ -2,7 +2,8 @@
 /secrets_local.py
 testServerthingy.py
 DNA.py
-
+hello-world-x64.dll
+hello-world-x86.dll
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
