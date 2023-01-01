@@ -1,4 +1,5 @@
 import ctypes
+from ctypes.wintypes import BOOL, LPDWORD, UINT
 from windows.error import InvalidHandle, ProcessNotFound, ProcessInjectionFailed, ThreadNotFound
 from windows.windows_helper import (
     HANDLE,
@@ -12,11 +13,12 @@ from windows.windows_helper import (
     THREADENTRY32,
     VIRTUAL_MEM,
     DWORD,
-    ULONG
+    ULONG,
+    open_process
 )
 
 
-def get_process_id(processName: str) -> tuple[DWORD]:
+def get_processes_for(processName: str) -> tuple[DWORD]:
     found_ids = []
     h_snapshot: HANDLE = KERNEL32.CreateToolhelp32Snapshot(
         TH32CS_SNAPPROCESS, 0)
@@ -37,7 +39,7 @@ def get_process_id(processName: str) -> tuple[DWORD]:
     return tuple(found_ids)
 
 
-def get_thread_id(pids: list[DWORD]) -> list[DWORD]:
+def get_threads_for(pids: list[DWORD]) -> list[DWORD]:
     found_ids = []
     h_snapshot: HANDLE = KERNEL32.CreateToolhelp32Snapshot(
         TH32CS_SNAPTHREAD, 0)
@@ -60,7 +62,7 @@ def get_thread_id(pids: list[DWORD]) -> list[DWORD]:
 def inject_dll(pid: DWORD, dll_path) -> bool:
     dll_len = len(dll_path)
 
-    h_process: HANDLE = KERNEL32.OpenProcess(
+    h_process: HANDLE = open_process(
         PROCESS_ALL_ACCESS, False, pid)
 
     if not h_process:
