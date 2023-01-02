@@ -1,5 +1,4 @@
 import ctypes
-from ctypes.wintypes import BOOL, LPDWORD, UINT
 from windows.error import InvalidHandle, ProcessNotFound, ProcessInjectionFailed, ThreadNotFound
 from windows.windows_helper import (
     HANDLE,
@@ -10,10 +9,15 @@ from windows.windows_helper import (
     PROCESSENTRY32,
     TH32CS_SNAPPROCESS,
     TH32CS_SNAPTHREAD,
+    THREAD_SUSPEND_RESUME,
     THREADENTRY32,
     VIRTUAL_MEM,
     DWORD,
     ULONG,
+    open_thread,
+    resume_thread,
+    suspend_thread,
+    wow64_suspend_thread,
     open_process
 )
 
@@ -39,7 +43,7 @@ def get_processes_for(processName: str) -> tuple[DWORD]:
     return tuple(found_ids)
 
 
-def get_threads_for(pids: list[DWORD]) -> list[DWORD]:
+def get_threads_for(pid) -> tuple[DWORD]:
     found_ids = []
     h_snapshot: HANDLE = KERNEL32.CreateToolhelp32Snapshot(
         TH32CS_SNAPTHREAD, 0)
@@ -50,13 +54,36 @@ def get_threads_for(pids: list[DWORD]) -> list[DWORD]:
         raise InvalidHandle
 
     while KERNEL32.Thread32Next(h_snapshot, ctypes.byref(te)):
-        if te.th32OwnerProcessID in pids:
-            found_ids.append((te.th32ThreadID, te.th32OwnerProcessID))
+        if te.th32OwnerProcessID == pid:
+            found_ids.append(te.th32ThreadID)
     if not found_ids:
         # Should be impossible if not suspendended assuming the pid exists
-        raise ThreadNotFound(f"Found no threads for {pids}")
+        raise ThreadNotFound(f"Found no threads for {pid}")
     KERNEL32.CloseHandle(h_snapshot)
-    return found_ids
+    return tuple(found_ids)
+
+
+# Replaced by resume_process and suspend_process in NTDLL
+"""
+def suspend_process(pid: DWORD, x64: bool = True):
+    print(pid)
+    for tid in get_threads_for(pid):
+        hThread: HANDLE = open_thread(
+            THREAD_SUSPEND_RESUME, False, tid)
+        if x64:
+            suspend_thread(hThread)
+        else:
+            wow64_suspend_thread(hThread)
+        KERNEL32.CloseHandle(hThread)
+
+
+def resume_process(pid):
+    for tid in get_threads_for(pid):
+        hThread: HANDLE = open_thread(
+            THREAD_SUSPEND_RESUME, False, tid)
+        resume_thread(hThread)
+        KERNEL32.CloseHandle(hThread)
+"""
 
 
 def inject_dll(pid: DWORD, dll_path) -> bool:
@@ -88,4 +115,5 @@ def inject_dll(pid: DWORD, dll_path) -> bool:
         raise ProcessInjectionFailed()
 
     print(f"Remote Thread with ID {thread_id.value} created.")
+    KERNEL32.CloseHandle(h_process)
     return True

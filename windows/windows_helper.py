@@ -3,12 +3,14 @@
 # https://learn.microsoft.com/en-us/windows/win32/api/tlhelp32/ns-tlhelp32-threadentry32
 # https://learn.microsoft.com/en-us/windows/win32/procthread/scheduling-priorities
 # https://docs.python.org/3/library/ctypes.html
+# https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/what-does-the-zw-prefix-mean-
 
 import ctypes
 from ctypes.wintypes import *
 
 KB = 1024
 KERNEL32 = ctypes.windll.kernel32
+NT = ctypes.windll.ntdll
 INVALID_HANDLE_VALUE = -1
 
 # Standard permission flags
@@ -221,7 +223,7 @@ def suspend_thread(hThread: HANDLE) -> DWORD:
 # DWORD Wow64SuspendThread(
 #    HANDLE hThread
 # );
-def Wow64_suspend_thread(hThread: HANDLE) -> DWORD:
+def wow64_suspend_thread(hThread: HANDLE) -> DWORD:
     return KERNEL32.Wow64SuspendThread(hThread)
 
 
@@ -255,3 +257,19 @@ def terminate_thread(hThread: HANDLE, dwExitCode: DWORD) -> BOOL:
 # );
 def terminate_process(hProcess: HANDLE, uExitCode: UINT) -> BOOL:
     return KERNEL32.TerminateProcess(hProcess, uExitCode)
+
+
+# Call undocumented functions from NTDLL
+
+# DWORD SuspendProcess(
+#  [ in ] HANDLE hThread
+# );
+def suspend_process(hProcess: HANDLE):
+    return NT.NtSuspendProcess(hProcess)
+
+
+# DWORD NTResumeProcess(
+#  [ in ] HANDLE hThread
+# );
+def resume_process(hProcess: HANDLE):
+    return NT.NtResumeProcess(hProcess)
